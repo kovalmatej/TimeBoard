@@ -9,8 +9,10 @@ class Plugin extends Base
 {
     public function initialize()
     {
+      $this->hook->on('template:layout:js', array('template' => 'plugins/Time_Board/Asset/ChangeTable.js'));
       $this->template->setTemplateOverride('dashboard/overview', 'Time_Board:dashboard/overview');;
       $this->hook->on("template:layout:css", array("template" => "plugins/Time_Board/Asset/TimeBoard.css"));
+
     }
 
     public function onStartup()

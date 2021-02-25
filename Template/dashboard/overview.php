@@ -105,10 +105,8 @@
 <?php endif ?>
 <?= $this->hook->render('template:dashboard:show', array('user' => $user)) ?>
 
-12345
-
 <div class="timetable">
-  <select name="month-select" id="month-table-select">
+  <select name="month-select" id="month-select" class="month-table-select">
     <option value="00">Select month</option>  
     <option value="01">January</option>                                          
     <option value="02">February</option>                        
@@ -123,7 +121,19 @@
     <option value="11">Novemeber</option>                        
     <option value="12">December</option>                        
   </select>
-  <table>
+  <select name="year-select" id="year-select" class="month-table-select">
+    <option value="0000">Select year</option>
+    <?php
+      $yearsShow = 5;
+      $currentYear = date("Y");
+      
+      for ($i = 0; $i <= $yearsShow; $i++) {
+        echo "<option value='{$currentYear}'>{$currentYear}</option>";  
+        $currentYear--;
+      }    
+    ?>                                         
+  </select>
+  <table id="task-timetable">
     <tr>
       <th>Project</th>
       <th>Task</th>
@@ -132,39 +142,42 @@
       <th>Task created</th>
     </tr>
 
-     <?php foreach ($result['paginator']->getCollection() as $task): ?>
-      <?php 
-        $dt = new DateTime("@" . $task['date_creation']); 
-        $summary += $task['time_spent'];
-      ?>
-        <tr>
-          <td>
-            <?= $task['project_name'] ?>
-          </td>
-          <td>
-            <?= $task['title'] ?>
-          </td>
-          <td>
-            <?= $task['time_estimated'] ?> hours
-          </td>
-          <td>
-            <?= $task['time_spent'] ?> hours
-          </td>
-          <td>
-            <?= $dt->format('d-m-Y H:i:s'); ?>
-          </td>
+    <?php foreach ($overview_paginator as $result): ?>
+      <?php foreach ($result['paginator']->getCollection() as $task): ?>
+        <?php 
+          $dt = new DateTime("@" . $task['date_creation']); 
+          $summary += $task['time_spent'];
+        ?>
+          <tr>
+            <td>
+              <?= $task['project_name'] ?>
+            </td>
+            <td>
+              <?= $task['title'] ?>
+            </td>
+            <td>
+              <?= $task['time_estimated'] ?> hours
+            </td>
+            <td>
+              <?= $task['time_spent'] ?> hours
+            </td>
+            <td>
+              <?= $dt->format('d-m-Y H:i:s'); ?>
+            </td>
 
-        </tr>
+          </tr>
+      <?php endforeach ?>
     <?php endforeach ?>
-
     <tr>
       <td class="empty-cell"></td>
       <td class="empty-cell"></td>
       <td class="empty-cell"></td>
-      <td class="main-cell">Sum: <?= $summary ?> hours</td>
+      <td class="main-cell">Sum: <span id="sum-hours"><?= $summary ?></span> hours</td>
     </tr>
   </table>
-  
+
+  <h2 class="revealed-info hidden">There are no task to show. Choose another date.</h2>
+  <a id="csv-download">Download as CSV</a>
  
 </div>
 
