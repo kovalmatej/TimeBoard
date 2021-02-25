@@ -1,0 +1,23 @@
+.timeboard-table th {
+  padding: 0;
+}
+
+.empty-cell {
+  border: none;
+}
+
+.main-cell {
+  font-weight: bold;
+}
+
+#month-table-select {
+  padding: 0.5em 1.0em 0.5em 0.8em;
+  border: 1px solid #e5e5e5;
+  color: #888;
+  border-radius: 0.5rem;
+  margin-bottom: 1em;
+}
+
+#month-table-select option {
+  color: #555;
+}
