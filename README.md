@@ -24,8 +24,3 @@ You have the choice between 3 methods:
 3. Clone this repository into the folder `plugins/Time_Board`
 
 Note: Plugin folder is case-sensitive.
-
-Documentation
--------------
-
-TODO.
