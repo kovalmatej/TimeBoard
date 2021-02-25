@@ -105,7 +105,7 @@
 <?php endif ?>
 <?= $this->hook->render('template:dashboard:show', array('user' => $user)) ?>
 
-
+12345
 
 <div class="timetable">
   <select name="month-select" id="month-table-select">
