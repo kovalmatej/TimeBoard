@@ -11,13 +11,21 @@ yearSelect.addEventListener("change", selectedDate);
 csvButton.addEventListener("click", () => download_table_as_csv('task-timetable'))
 
 function selectedDate() {
-  var month = monthSelect.value;
+  var months = monthSelect.options;
   var year = yearSelect.value;
   var sum = 0;
   
   table.style.display = "";
   info.classList.add("hidden")
 
+    let monthsSelected = [];
+    for(let option of months) {
+      if(option.selected) {
+        monthsSelected.push(option.value);
+      }
+    }
+
+  let isTableEmpty = true;
   var trs = table.getElementsByTagName("tr");
   for (var i = 0; i < trs.length; i++) {
     var td = trs[i].getElementsByTagName("td")[4];
@@ -26,11 +34,11 @@ function selectedDate() {
     if (td) {
       txtValue =  td.innerText.trim() || td.textContent.trim();
       monthTxtValue = txtValue.substring(3, 5);
-
       txtValue2 =  td.innerText.trim() || td.textContent.trim();
       yearTxtValue = txtValue2.substring(6, 10);
 
-      if( (monthTxtValue == month && yearTxtValue == year) || (monthTxtValue == month && year == "0000") || (month == "00" && yearTxtValue == year) || (month == "00" && year == "0000") ) {
+      if( (monthsSelected.indexOf(monthTxtValue) > -1 && yearTxtValue == year) || (monthsSelected.indexOf(monthTxtValue) > -1 && year == "0000") || (monthsSelected.indexOf("00") > -1 && yearTxtValue == year) || (monthsSelected.indexOf("00") > -1 && year == "0000") ) {
+        isTableEmpty = false;
         trs[i].style.display = "";
         hoursInRow = hoursTd.innerText.trim().replace(/[^0-9]/g ,'');
         sum += parseInt(hoursInRow);
@@ -41,7 +49,7 @@ function selectedDate() {
     }       
   }
 
-  if(sum == 0) {
+  if(isTableEmpty) {
     table.style.display = "none"
     info.classList.remove("hidden")
   }
@@ -68,7 +76,6 @@ function download_table_as_csv(table_id, separator = ';') {
         csv.push(row.join(separator));
     }
     var csv_string = csv.join('\n');
-    console.log(csv_string)
     // Download it
     var filename = 'table.csv';
     var link = document.createElement('a');
