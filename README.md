@@ -1,7 +1,7 @@
 TimeBoard
 ==============================
 
-Display summary of time spend by each team member and allows to export data.
+Display time spent on project by user and allow to filter it or export as CSV.
 
 Author
 ------
@@ -24,8 +24,3 @@ You have the choice between 3 methods:
 3. Clone this repository into the folder `plugins/Time_Board`
 
 Note: Plugin folder is case-sensitive.
-
-Documentation
--------------
-
-TODO.
