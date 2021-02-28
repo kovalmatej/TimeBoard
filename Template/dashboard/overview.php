@@ -150,7 +150,7 @@
     <?php foreach ($overview_paginator as $result): ?>
       <?php foreach ($result['paginator']->getCollection() as $task): ?>
         <?php 
-          $dt = $task['date_started'] != 0 
+          $dt = $task['date_started'] != 0 // If starting date isn't determined, the ceration date will be used 
           ? new DateTime("@" . $task['date_started'])
           : new DateTime("@" . $task['date_creation']);
           $summary += $task['time_spent'];

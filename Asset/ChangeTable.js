@@ -1,91 +1,103 @@
-
-var monthSelect = document.getElementById("month-select");
-var yearSelect = document.getElementById("year-select");
-var table = document.getElementById("task-timetable");
-var sumCell = document.getElementById("sum-hours");
-var info = document.getElementsByClassName("revealed-info")[0];
-var csvButton = document.getElementById("csv-download");
+const monthSelect = document.getElementById("month-select");
+const yearSelect = document.getElementById("year-select");
+const table = document.getElementById("task-timetable");
+const sumCell = document.getElementById("sum-hours");
+const info = document.getElementsByClassName("revealed-info")[0];
+const csvButton = document.getElementById("csv-download");
 
 monthSelect.addEventListener("change", selectedDate);
 yearSelect.addEventListener("change", selectedDate);
-csvButton.addEventListener("click", () => download_table_as_csv('task-timetable'))
+csvButton.addEventListener("click", () =>
+	download_table_as_csv("task-timetable")
+);
 
 function selectedDate() {
-  var months = monthSelect.options;
-  var year = yearSelect.value;
-  var sum = 0;
-  
-  table.style.display = "";
-  info.classList.add("hidden")
+	const months = monthSelect.options;
+	const year = yearSelect.value;
+	let sum = 0.0; // Summary of hours in column
 
-    let monthsSelected = [];
-    for(let option of months) {
-      if(option.selected) {
-        monthsSelected.push(option.value);
-      }
-    }
+	table.style.display = ""; // Display table
+	info.classList.add("hidden"); // Hide info message
 
-  let isTableEmpty = true;
-  var trs = table.getElementsByTagName("tr");
-  for (var i = 0; i < trs.length; i++) {
-    var td = trs[i].getElementsByTagName("td")[4];
-    var hoursTd = trs[i].getElementsByTagName("td")[3];
+	let monthsSelected = []; // Push selected months into array
+	months.forEach((month) => {
+		month.option.selected ? monthsSelected.push(month.option.value) : "";
+	});
 
-    if (td) {
-      txtValue =  td.innerText.trim() || td.textContent.trim();
-      monthTxtValue = txtValue.substring(3, 5);
-      txtValue2 =  td.innerText.trim() || td.textContent.trim();
-      yearTxtValue = txtValue2.substring(6, 10);
+	let isTableEmpty = true; // Variable to determine whether hide/show table
+	const trs = table.getElementsByTagName("tr"); // All rows in table
 
-      if( (monthsSelected.indexOf(monthTxtValue) > -1 && yearTxtValue == year) || (monthsSelected.indexOf(monthTxtValue) > -1 && year == "0000") || (monthsSelected.indexOf("00") > -1 && yearTxtValue == year) || (monthsSelected.indexOf("00") > -1 && year == "0000") ) {
-        isTableEmpty = false;
-        trs[i].style.display = "";
-        hoursInRow = hoursTd.innerText.trim().replace(/[^0-9]/g ,'');
-        sum += parseInt(hoursInRow);
-        sumCell.innerHTML = sum;
-      } else {
-        trs[i].style.display = "none";
-      }
-    }       
-  }
+	trs.forEach((tr) => {
+		const dateCell = trs[i].getElementsByTagName("td")[4];
+		const hoursCell = trs[i].getElementsByTagName("td")[3];
 
-  if(isTableEmpty) {
-    table.style.display = "none"
-    info.classList.remove("hidden")
-  }
+		if (dateCell) {
+			dateCellTxt = dateCell.innerText.trim() || td.textContent.trim(); // Get text in date cell
+			monthTxtValue = txtValue.substring(3, 5); // Get only the month value in date
+			yearTxtValue = dateCellTxt.substring(6, 10); // Get only the year in date
 
+			// Hides row where month/year of task isn't in selected
+			// If no month/year is selected it acts as all ale selected
+			if (
+				(monthsSelected.includes(monthTxtValue) && yearTxtValue == year) ||
+				(monthsSelected.includes(monthTxtValue) && year == "0000") ||
+				(monthsSelected.includes("00") && yearTxtValue == year) ||
+				(monthsSelected.includes("00") && year == "0000")
+			) {
+				isTableEmpty = false;
+				trs[i].style.display = ""; // Display the row
+				hoursInRow = hoursCell.innerText.trim().replace(/\D+$/g, ""); // Get the number of hours from the cell
+				sum += parseInt(hoursInRow);
+				sumCell.innerHTML = sum; // Display the sum of hours
+			} else {
+				trs[i].style.display = "none"; // Hide the row
+			}
+		}
+
+		if (isTableEmpty) {
+			table.style.display = "none"; // Hide table
+			info.classList.remove("hidden"); // Display message
+		}
+	});
 }
 
 // Quick and simple export target #table_id into a csv
-function download_table_as_csv(table_id, separator = ';') {
-  if(table.style.display != "none") {
-     // Select rows from table_id
-    var rows = document.querySelectorAll('table#' + table_id + ' tr');
-    // Construct csv
-    var csv = [];
-    for (var i = 0; i < rows.length; i++) {
-        var row = [], cols = rows[i].querySelectorAll('td, th');
-        for (var j = 0; j < cols.length; j++) {
-            // Clean innertext to remove multiple spaces and jumpline (break csv)
-            var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
-            // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
-            data = data.replace(/"/g, '""');
-            // Push escaped string
-            row.push('"' + data + '"');
-        }
-        csv.push(row.join(separator));
-    }
-    var csv_string = csv.join('\n');
-    // Download it
-    var filename = 'table.csv';
-    var link = document.createElement('a');
-    link.style.display = 'none';
-    link.setAttribute('target', '_blank');
-    link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-   
+function download_table_as_csv(table_id, separator = ";") {
+	if (table.style.display != "none") {
+		const rows = document.querySelectorAll("table#" + table_id + " tr"); // Select rows from table_id
+
+		let csv = []; // Construct csv
+		rows.forEach((currentRow) => {
+			const row = [];
+			const cols = currentRow.querySelectorAll("td, th");
+
+			cols.forEach((col) => {
+				// Clean innertext to remove multiple spaces and jumpline (break csv)
+				let data = col.innerText
+					.replace(/(\r\n|\n|\r)/gm, "")
+					.replace(/(\s\s)/gm, " ");
+				// Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+				data = data.replace(/"/g, '""');
+				// Push escaped string
+				row.push('"' + data + '"');
+			});
+
+			csv.push(row.join(separator));
+		});
+
+		const csv_string = csv.join("\n");
+		// Download it
+		const filename = "table.csv";
+		let link = document.createElement("a");
+		link.style.display = "none";
+		link.setAttribute("target", "_blank");
+		link.setAttribute(
+			"href",
+			"data:text/csv;charset=utf-8," + encodeURIComponent(csv_string)
+		);
+		link.setAttribute("download", filename);
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	}
 }
