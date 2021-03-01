@@ -4,6 +4,7 @@ const table = document.getElementById("task-timetable");
 const sumCell = document.getElementById("sum-hours");
 const info = document.getElementsByClassName("revealed-info")[0];
 const csvButton = document.getElementById("csv-download");
+const statusCell = document.getElementById("status-cell");
 
 monthSelect.addEventListener("change", selectedDate);
 yearSelect.addEventListener("change", selectedDate);
@@ -101,3 +102,58 @@ function download_table_as_csv(table_id, separator = ";") {
 		document.body.removeChild(link);
 	}
 }
+
+function getValue(tr, n) {
+	// Give some weight depending on type of data
+	const s = tr.cells[n].innerText; // get the data to display weight
+	if (s.includes("hours")) {
+		// For columns with hours
+		return parseFloat(s.split(" ")[0]);
+	}
+	if (n == 5) {
+		// For status column
+		if (s == "Done") {
+			return 9;
+		}
+		if (s == "Work in progress") {
+			return 8;
+		}
+		if (s == "Ready") {
+			return 7;
+		} else {
+			return 6;
+		}
+	}
+
+	const month = s.substring(3, 6); // We need mm-dd-YYYY format to use Date.parse
+	let changedDate = month + s.substring(0, 2) + s.substring(5);
+
+	const time = Date.parse(changedDate); // get the epoch time
+	return isNaN(time) ? s.toLowerCase() : time; // return epoch time or string
+}
+
+function sortTable(e) {
+	const th = e.target; // Determine if it's initial sort or sort based on click
+	if (th.nodeName.toLowerCase() !== "th") return true;
+
+	let n = 0;
+	while (th.parentNode.cells[n] != th) ++n; // Which column was selected?
+
+	let order = th.order || -1; // Determine orded in which to display data
+	th.order = -order;
+	let t = table.querySelector("tbody");
+
+	let lastRow = t.rows[t.rows.length - 1]; // Get the summary row
+	t.innerHTML = Object.keys(t.rows)
+		.filter((k) => !isNaN(k))
+		.filter((k) => k != t.rows.length - 1) // remove summary row
+		.map((k) => t.rows[k])
+		.sort((a, b) => order * (getValue(a, n) > getValue(b, n) ? 1 : -1)) // sort based on which column we clicked
+		.map((r) => r.outerHTML)
+		.join("");
+	t.innerHTML += lastRow.outerHTML; //add summary row after sorting
+}
+
+document
+	.querySelector("#task-timetable")
+	.addEventListener("click", sortTable, false);

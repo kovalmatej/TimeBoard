@@ -141,16 +141,18 @@
 
   </div>
 
-
   <table id="task-timetable">
-    <tr>
-      <th>Project</th>
-      <th>Task</th>
-      <th>Time estimated</th>
-      <th>Time spent</th>
-      <th>Task started</th>
-    </tr>
-
+    <thead>
+      <tr>
+        <th>Project</th>
+        <th>Task</th>
+        <th>Time estimated</th>
+        <th>Time spent</th>
+        <th>Task started</th>
+        <th id="status-cell">Status</th>
+      </tr>
+    </thead>
+    <tbody>
     <?php foreach ($overview_paginator as $result): ?>
 
     <?php foreach ($result['paginator']->getCollection() as $task): ?>
@@ -159,7 +161,7 @@
           ? new DateTime("@" . $task['date_started'])
           : new DateTime("@" . $task['date_creation']);
           $summary += $task['time_spent'];
-        ?>
+      ?>
 
     <?php if(empty($task['subtasks']))  { 
           echo "<tr>
@@ -178,13 +180,15 @@
               <td>
                 " . $dt->format('d-m-Y H:i:s') . "
               </td>
-
+              <td>"
+              . $task['column_name']  . "
+              </td>
             </tr>";
-        ?>
+    ?>
     <?php }else { ?>
     <?php
-              foreach ($task['subtasks'] as $subtask) {
-                if($subtask['username'] == $user['username']) { ?>
+      foreach ($task['subtasks'] as $subtask) {
+      if($subtask['username'] == $user['username']) { ?>
     <tr>
       <td>
         <a
@@ -192,8 +196,8 @@
       </td>
       <td>
         <?php
-                            echo '<a href="/?controller=TaskViewController&action=show&task_id=' . $task['id'] . '">' . $subtask['title'] . '</a>';
-                        ?>
+          echo '<a href="/?controller=TaskViewController&action=show&task_id=' . $task['id'] . '">' . $subtask['title'] . '</a>';
+        ?>
       </td>
       <td>
         <?= $subtask['time_estimated'] ?> hours
@@ -204,7 +208,22 @@
       <td>
         <?= $dt->format('d-m-Y H:i:s'); ?>
       </td>
+      <td>
+        <?php
+          if($subtask['status'] == 0) {
+            echo "Ready";
+          }else if($subtask['status'] == 1) {
+            echo "Work in progress";
+          }else if($subtask['status'] == 2) {
+            echo "Done";
+          }else {
+            echo "Not defined";
+          }
+        ?>
+      </td>
     </tr>
+
+
     <?php } } ?>
     <?php } ?>
     <?php endforeach ?>
@@ -215,6 +234,7 @@
       <td class="empty-cell"></td>
       <td class="main-cell">Sum: <span id="sum-hours"><?= $summary ?></span> hours</td>
     </tr>
+       </tbody>
   </table>
 
   <h2 class="revealed-info hidden">There are no task to show. Choose another date.</h2>
