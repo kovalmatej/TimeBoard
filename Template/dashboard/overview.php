@@ -111,7 +111,7 @@
 
 <div class="timetable">
   <div class="selects">
-    <select name="month-select" id="month-select" class="month-table-select" multiple>
+    <select name="month-select" id="month-select" class="table-select" multiple>
       <option value="00">Select month</option>
       <option value="01">January</option>
       <option value="02">February</option>
@@ -126,7 +126,7 @@
       <option value="11">Novemeber</option>
       <option value="12">December</option>
     </select>
-    <select name="year-select" id="year-select" class="month-table-select">
+    <select name="year-select" id="year-select" class="short-select table-select">
       <option value="0000">Select year</option>
       <?php
           $yearsShow = 5;

@@ -10,12 +10,12 @@
   font-weight: bold;
 }
 
-.month-table-select {
+.table-select {
   padding: 0.5em 1.0em 0.5em 0.8em;
   border: 1px solid #e5e5e5;
   color: #888;
   border-radius: 0.5rem;
-  margin-bottom: 1em;
+  margin-right: 1em;
 }
 
 #month-table-select option {
@@ -45,45 +45,12 @@
   color: #DF5353;
 }
 
-.multiselect {
-  width: 200px;
+.short-select {
+  height: 40px;
 }
 
-.selectBox {
-  position: relative;
-}
-
-.selectBox select {
-  width: 100%;
-  font-weight: bold;
-}
-
-.overSelect {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-}
-
-#checkboxes {
-  display: none;
-  border: 1px #dadada solid;
-}
-
-#checkboxes label {
-  display: block;
-}
-
-#checkboxes label:hover {
-  background-color: #1e90ff;
-}
-
-#month-select {
-  float: left;
-}
-
-#year-select {
-  margin-top: 2rem;
-  margin-left: 1rem;
+.selects {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
 }
