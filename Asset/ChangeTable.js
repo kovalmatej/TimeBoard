@@ -20,20 +20,20 @@ function selectedDate() {
 	info.classList.add("hidden"); // Hide info message
 
 	let monthsSelected = []; // Push selected months into array
-	months.forEach((month) => {
-		month.option.selected ? monthsSelected.push(month.option.value) : "";
-	});
+	for (const option of months) {
+		option.selected ? monthsSelected.push(option.value) : "";
+	}
 
 	let isTableEmpty = true; // Variable to determine whether hide/show table
 	const trs = table.getElementsByTagName("tr"); // All rows in table
 
-	trs.forEach((tr) => {
-		const dateCell = trs[i].getElementsByTagName("td")[4];
-		const hoursCell = trs[i].getElementsByTagName("td")[3];
+	for (let tr of trs) {
+		const dateCell = tr.getElementsByTagName("td")[4];
+		const hoursCell = tr.getElementsByTagName("td")[3];
 
 		if (dateCell) {
 			dateCellTxt = dateCell.innerText.trim() || td.textContent.trim(); // Get text in date cell
-			monthTxtValue = txtValue.substring(3, 5); // Get only the month value in date
+			monthTxtValue = dateCellTxt.substring(3, 5); // Get only the month value in date
 			yearTxtValue = dateCellTxt.substring(6, 10); // Get only the year in date
 
 			// Hides row where month/year of task isn't in selected
@@ -45,20 +45,20 @@ function selectedDate() {
 				(monthsSelected.includes("00") && year == "0000")
 			) {
 				isTableEmpty = false;
-				trs[i].style.display = ""; // Display the row
-				hoursInRow = hoursCell.innerText.trim().replace(/\D+$/g, ""); // Get the number of hours from the cell
-				sum += parseInt(hoursInRow);
+				tr.style.display = ""; // Display the row
+				hoursInRow = hoursCell.innerText.split(" ")[0].trim(); // Get the number of hours from the cell
+				sum += parseFloat(hoursInRow);
 				sumCell.innerHTML = sum; // Display the sum of hours
 			} else {
-				trs[i].style.display = "none"; // Hide the row
+				tr.style.display = "none"; // Hide the row
 			}
 		}
+	}
 
-		if (isTableEmpty) {
-			table.style.display = "none"; // Hide table
-			info.classList.remove("hidden"); // Display message
-		}
-	});
+	if (isTableEmpty) {
+		table.style.display = "none"; // Hide table
+		info.classList.remove("hidden"); // Display message
+	}
 }
 
 // Quick and simple export target #table_id into a csv
