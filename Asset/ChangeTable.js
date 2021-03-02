@@ -21,7 +21,7 @@ function selectedDate() {
 	const months = monthSelect.options;
 	const year = yearSelect.value;
 	let sum = 0.0; // Summary of hours in column
-  let estimatedSum = 0.0;
+	let estimatedSum = 0.0;
 
 	table.style.display = ""; // Display table
 	info.classList.add("hidden"); // Hide info message
@@ -37,7 +37,7 @@ function selectedDate() {
 	for (let tr of trs) {
 		const dateCell = tr.getElementsByTagName("td")[4];
 		const hoursCell = tr.getElementsByTagName("td")[3];
-    const estimatedHoursCell = tr.getElementsByTagName("td")[2];
+		const estimatedHoursCell = tr.getElementsByTagName("td")[2];
 
 		if (dateCell) {
 			dateCellTxt = dateCell.innerText.trim() || td.textContent.trim(); // Get text in date cell
@@ -55,7 +55,7 @@ function selectedDate() {
 				isTableEmpty = false;
 				tr.style.display = ""; // Display the row
 				hoursInRow = hoursCell.innerText.split(" ")[0].trim(); // Get the number of hours from the cell
-        estimatedHoursInRow = estimatedHoursCell.innerText.split(" ")[0].trim();
+				estimatedHoursInRow = estimatedHoursCell.innerText.split(" ")[0].trim();
 				sum += parseFloat(hoursInRow);
 				estimatedSum += parseFloat(estimatedHoursInRow);
 			} else {
@@ -69,10 +69,10 @@ function selectedDate() {
 		info.classList.remove("hidden"); // Display message
 	}
 
-  sumCell = document.getElementById("sum-hours"); // Must select again, otherwise the sum won't update
-  estimatedSumCell = document.getElementById("estimated-sum-hours");
-  sumCell.innerHTML = sum; // Display the sum of hours
-  estimatedSumCell.innerHTML = estimatedSum;
+	sumCell = document.getElementById("sum-hours"); // Must select again, otherwise the sum won't update
+	estimatedSumCell = document.getElementById("estimated-sum-hours");
+	sumCell.innerHTML = sum; // Display the sum of hours
+	estimatedSumCell.innerHTML = estimatedSum;
 }
 
 // Quick and simple export target #table_id into a csv
@@ -81,22 +81,22 @@ function download_table_as_csv(table_id, separator = ";") {
 		const rows = document.querySelectorAll("table#" + table_id + " tr"); // Select rows from table_id
 		let csv = []; // Construct csv
 		rows.forEach((currentRow) => {
-      if(currentRow.style.display != "none"){
-        const row = [];
-        const cols = currentRow.querySelectorAll("td, th");
+			if (currentRow.style.display != "none") {
+				const row = [];
+				const cols = currentRow.querySelectorAll("td, th");
 
-        cols.forEach((col) => {
-          // Clean innertext to remove multiple spaces and jumpline (break csv)
-          let data = col.innerText
-          data = data.replace("▲", '').trim();
-          // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
-          data = data.replace(/"/g, '""');
-          // Push escaped string
-          row.push('"' + data + '"');
-        });
+				cols.forEach((col) => {
+					// Clean innertext to remove multiple spaces and jumpline (break csv)
+					let data = col.innerText;
+					data = data.replace("▲", "").trim();
+					// Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+					data = data.replace(/"/g, '""');
+					// Push escaped string
+					row.push('"' + data + '"');
+				});
 
-        csv.push(row.join(separator));
-      }
+				csv.push(row.join(separator));
+			}
 		});
 
 		const csv_string = csv.join("\n");
@@ -148,24 +148,25 @@ function getValue(tr, n) {
 function sortTable(e) {
 	let th = e.target;
 
-  if(e.target.classList[0] == "arrow") { // Handle click on arrow
-    th = e.target.parentNode;
-  }
+	if (e.target.classList[0] == "arrow") {
+		// Handle click on arrow
+		th = e.target.parentNode;
+	}
 
 	if (th.nodeName.toLowerCase() !== "th") return true;
-  
+
 	let n = 0;
 	while (th.parentNode.cells[n] != th) ++n; // Which column was selected?
 
 	let order = th.order || -1; // Determine orded in which to display data
 	th.order = -order;
 
-  let arrow = th.getElementsByClassName("arrow")[0]
-  if(th.order == 1) {
-    arrow.classList.add("arrow-down");
-  }else {
-    arrow.classList.remove("arrow-down");
-  }
+	let arrow = th.getElementsByClassName("arrow")[0];
+	if (th.order == 1) {
+		arrow.classList.add("arrow-down");
+	} else {
+		arrow.classList.remove("arrow-down");
+	}
 
 	let t = table.querySelector("tbody");
 
@@ -175,8 +176,9 @@ function sortTable(e) {
 		.filter((k) => k != t.rows.length - 1) // remove summary row
 		.map((k) => t.rows[k])
 		.sort((a, b) => order * (getValue(a, n) > getValue(b, n) ? 1 : -1)) // sort based on which column we clicked
-		.map((r) => {return r.outerHTML})
+		.map((r) => {
+			return r.outerHTML;
+		})
 		.join("");
 	t.innerHTML += lastRow.outerHTML; //add summary row after sorting
 }
-
