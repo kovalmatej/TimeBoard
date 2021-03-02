@@ -144,12 +144,12 @@
   <table id="task-timetable">
     <thead>
       <tr>
-        <th>Project</th>
-        <th>Task</th>
-        <th>Time estimated</th>
-        <th>Time spent</th>
-        <th>Task started</th>
-        <th id="status-cell">Status</th>
+        <th>Project <div class="arrow">▲</div></th>
+        <th>Task <span class="arrow">▲</span></th>
+        <th>Time estimated <span class="arrow">▲</span></th>
+        <th>Time spent <span class="arrow">▲</span></th>
+        <th>Task started <span class="arrow">▲</span></th>
+        <th id="status-cell">Status <span class="arrow">▲</span></th>
       </tr>
     </thead>
     <tbody>
@@ -161,6 +161,7 @@
           ? new DateTime("@" . $task['date_started'])
           : new DateTime("@" . $task['date_creation']);
           $summary += $task['time_spent'];
+          $estimatedSummary += $task['time_estimated'];
       ?>
 
     <?php if(empty($task['subtasks']))  { 
@@ -169,7 +170,7 @@
                 <a href=/?controller=BoardViewController&action=show&project_id=" . $task['project_id'] . ">" . $task['project_name'] . "</a>
               </td>
               <td>
-                    <a href=/?controller=TaskViewController&action=show&task_id=" . $task['id'] . ">" . $task['title'] . "</a>
+                    <a href=/?controller=TaskViewController&action=show&task_id=" . $task['id'] . ">" . " <b>#" . $task['id'] . "</b> " . $task['title']  . "</a>
               </td>
               <td>
                 " . $task['time_estimated'] . " hours
@@ -192,11 +193,11 @@
     <tr>
       <td>
         <a
-          href=<?= "/?controller=BoardViewController&action=show&project_id=" . $task['project_id'] ?>><?= $task['project_name'] ?></a>
+          href=<?= "/?controller=BoardViewController&action=show&project_id=" . $task['project_id'] ?>> <?= $task['project_name'] ?></a>
       </td>
       <td>
         <?php
-          echo '<a href="/?controller=TaskViewController&action=show&task_id=' . $task['id'] . '">' . $subtask['title'] . '</a>';
+          echo '<a href="/?controller=TaskViewController&action=show&task_id=' . $task['id'] . '">' . "<b>#" . $task['id'] . "</b> " .  $subtask['title'] . '</a>';
         ?>
       </td>
       <td>
@@ -231,7 +232,7 @@
     <tr>
       <td class="empty-cell"></td>
       <td class="empty-cell"></td>
-      <td class="empty-cell"></td>
+      <td class="main-cell">Sum: <span id="estimated-sum-hours"><?= $estimatedSummary ?></span> hours</td>
       <td class="main-cell">Sum: <span id="sum-hours"><?= $summary ?></span> hours</td>
     </tr>
        </tbody>
