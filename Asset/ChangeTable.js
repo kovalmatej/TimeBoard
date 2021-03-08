@@ -79,7 +79,7 @@ function selectedDate() {
 function download_table_as_csv(table_id, separator = ";") {
 	if (table.style.display != "none") {
 		const rows = document.querySelectorAll("table#" + table_id + " tr"); // Select rows from table_id
-		let csv = []; // Construct csv
+		let csv = ["\uFEFF"]; // Construct csv
 		rows.forEach((currentRow) => {
 			if (currentRow.style.display != "none") {
 				const row = [];
